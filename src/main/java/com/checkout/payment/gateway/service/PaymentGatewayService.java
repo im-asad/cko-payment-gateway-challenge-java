@@ -2,7 +2,7 @@ package com.checkout.payment.gateway.service;
 
 import com.checkout.payment.gateway.exception.PaymentNotFoundException;
 import com.checkout.payment.gateway.model.PostPaymentRequest;
-import com.checkout.payment.gateway.model.PaymentResponse;
+import com.checkout.payment.gateway.model.GetPaymentResponse;
 import com.checkout.payment.gateway.repository.PaymentsRepository;
 import java.util.UUID;
 import org.slf4j.Logger;
@@ -20,13 +20,13 @@ public class PaymentGatewayService {
     this.paymentsRepository = paymentsRepository;
   }
 
-  public PaymentResponse getPaymentById(UUID id) {
+  public GetPaymentResponse getPaymentById(UUID id) {
     LOG.debug("Requesting access to to payment with ID {}", id);
     return paymentsRepository.get(id).orElseThrow(() -> new PaymentNotFoundException(id));
   }
 
-  public PaymentResponse processPayment(PostPaymentRequest paymentRequest) {
-    // TODO: call bank simulator and store result
-    return new PaymentResponse();
+  public GetPaymentResponse processPayment(PostPaymentRequest paymentRequest) {
+    
+    return new GetPaymentResponse();
   }
 }
