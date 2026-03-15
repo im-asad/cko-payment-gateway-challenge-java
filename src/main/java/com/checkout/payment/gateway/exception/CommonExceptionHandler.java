@@ -1,7 +1,8 @@
 package com.checkout.payment.gateway.exception;
 
+import com.checkout.payment.gateway.enums.PaymentStatus;
 import com.checkout.payment.gateway.model.ErrorResponse;
-import java.util.stream.Collectors;
+import com.checkout.payment.gateway.model.PostPaymentResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -22,11 +23,10 @@ public class CommonExceptionHandler {
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException ex) {
+  public ResponseEntity<PostPaymentResponse> handleValidationException(MethodArgumentNotValidException ex) {
     LOG.warn("Payment cannot be processed exception occurred due to invalid request: ", ex);
-    String message = ex.getBindingResult().getAllErrors().stream()
-        .map(error -> error.getDefaultMessage())
-        .collect(Collectors.joining(", "));
-    return new ResponseEntity<>(new ErrorResponse(message), HttpStatus.BAD_REQUEST);
+    PostPaymentResponse paymentResponse = new PostPaymentResponse();
+    paymentResponse.setPaymentStatus(PaymentStatus.REJECTED);
+    return new ResponseEntity<>(paymentResponse, HttpStatus.BAD_REQUEST);
   }
 }

@@ -1,10 +1,15 @@
 package com.checkout.payment.gateway.model;
 
-public class BankSimulatorPostPaymentResponse {
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public class BankSimulatorResponse {
+
   private boolean authorized;
+
+  @JsonProperty("authorization_code")
   private String authorizationCode;
 
-  public boolean getAuthorized() {
+  public boolean getIsAuthorized() {
     return authorized;
   }
 
@@ -18,13 +23,5 @@ public class BankSimulatorPostPaymentResponse {
 
   public void setAuthorizationCode(String authorizationCode) {
     this.authorizationCode = authorizationCode;
-  }
-
-  @Override
-  public String toString() {
-    return "BankSimulatorPostPaymentResponse{" +
-      "authorized='" + authorized + '\'' +
-      "authorizationCode='" + authorizationCode + '\'' +
-    "}";
   }
 }
