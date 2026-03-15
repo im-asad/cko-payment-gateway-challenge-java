@@ -3,7 +3,7 @@ package com.checkout.payment.gateway.model;
 import com.checkout.payment.gateway.enums.PaymentStatus;
 import java.util.UUID;
 
-public class GetPaymentResponse {
+public class PaymentResponse {
   private UUID id;
   private PaymentStatus status;
   private int cardNumberLastFour;
@@ -70,7 +70,7 @@ public class GetPaymentResponse {
 
   @Override
   public String toString() {
-    return "GetPaymentResponse{" +
+    return "PaymentResponse{" +
         "id=" + id +
         ", status=" + status +
         ", cardNumberLastFour=" + cardNumberLastFour +
