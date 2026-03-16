@@ -2,9 +2,10 @@ package com.checkout.payment.gateway.service;
 
 import com.checkout.payment.gateway.enums.PaymentStatus;
 import com.checkout.payment.gateway.exception.PaymentNotFoundException;
+import com.checkout.payment.gateway.model.BankPaymentRequest;
+import com.checkout.payment.gateway.model.BankResponse;
 import com.checkout.payment.gateway.model.GetPaymentResponse;
 import com.checkout.payment.gateway.model.Payment;
-import com.checkout.payment.gateway.model.BankSimulatorResponse;
 import com.checkout.payment.gateway.model.PostPaymentRequest;
 import com.checkout.payment.gateway.model.PostPaymentResponse;
 import com.checkout.payment.gateway.repository.PaymentsRepository;
@@ -21,24 +22,24 @@ public class PaymentGatewayService {
   private static final Logger LOG = LoggerFactory.getLogger(PaymentGatewayService.class);
 
   private final PaymentsRepository paymentsRepository;
-  private final BankSimulatorClient bankSimulatorClient;
+  private final BankClient bankClient;
 
-  public PaymentGatewayService(PaymentsRepository paymentsRepository, BankSimulatorClient bankSimulatorClient) {
+  public PaymentGatewayService(PaymentsRepository paymentsRepository, BankClient bankClient) {
     this.paymentsRepository = paymentsRepository;
-    this.bankSimulatorClient = bankSimulatorClient;
+    this.bankClient = bankClient;
   }
 
   public GetPaymentResponse getPaymentById(UUID id) {
-    LOG.debug("Requesting access to payment with ID {}", id);
+    LOG.debug("Requesting payment with ID {}", id);
     return paymentsRepository.get(id)
         .map(this::toGetPaymentResponse)
         .orElseThrow(() -> new PaymentNotFoundException(id));
   }
 
   public PostPaymentResponse processPayment(PostPaymentRequest paymentRequest) {
-    BankSimulatorResponse bankResponse = bankSimulatorClient.processPayment(paymentRequest);
+    BankResponse bankResponse = bankClient.processPayment(toBankPaymentRequest(paymentRequest));
 
-    PaymentStatus status = bankResponse.getIsAuthorized() ? PaymentStatus.AUTHORIZED : PaymentStatus.DECLINED;
+    PaymentStatus status = bankResponse.isAuthorized() ? PaymentStatus.AUTHORIZED : PaymentStatus.DECLINED;
     UUID paymentId = UUID.randomUUID();
 
     Payment payment = new Payment();
@@ -51,10 +52,20 @@ public class PaymentGatewayService {
     payment.setAmount(paymentRequest.getAmount());
     paymentsRepository.add(payment);
 
-    PostPaymentResponse paymentResponse = new PostPaymentResponse();
-    paymentResponse.setPaymentId(paymentId);
-    paymentResponse.setPaymentStatus(status);
-    return paymentResponse;
+    PostPaymentResponse response = new PostPaymentResponse();
+    response.setPaymentId(paymentId);
+    response.setPaymentStatus(status);
+    return response;
+  }
+
+  private BankPaymentRequest toBankPaymentRequest(PostPaymentRequest request) {
+    return new BankPaymentRequest(
+        request.getCardNumber(),
+        request.getExpiryDate(),
+        request.getCurrency(),
+        request.getAmount(),
+        request.getCvv()
+    );
   }
 
   private GetPaymentResponse toGetPaymentResponse(Payment payment) {
