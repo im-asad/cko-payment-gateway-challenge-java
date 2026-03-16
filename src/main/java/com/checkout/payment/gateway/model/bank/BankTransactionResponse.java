@@ -1,6 +1,6 @@
-package com.checkout.payment.gateway.model;
+package com.checkout.payment.gateway.model.bank;
 
-public class BankResponse {
+public class BankTransactionResponse {
 
   private boolean authorized;
   private String authorizationCode;

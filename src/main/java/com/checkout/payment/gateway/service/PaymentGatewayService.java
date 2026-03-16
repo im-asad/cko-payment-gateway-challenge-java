@@ -2,12 +2,12 @@ package com.checkout.payment.gateway.service;
 
 import com.checkout.payment.gateway.enums.PaymentStatus;
 import com.checkout.payment.gateway.exception.PaymentNotFoundException;
-import com.checkout.payment.gateway.model.BankPaymentRequest;
-import com.checkout.payment.gateway.model.BankResponse;
-import com.checkout.payment.gateway.model.GetPaymentResponse;
-import com.checkout.payment.gateway.model.Payment;
-import com.checkout.payment.gateway.model.PostPaymentRequest;
-import com.checkout.payment.gateway.model.PostPaymentResponse;
+import com.checkout.payment.gateway.model.api.CreatePaymentRequest;
+import com.checkout.payment.gateway.model.api.CreatePaymentResponse;
+import com.checkout.payment.gateway.model.api.PaymentResponse;
+import com.checkout.payment.gateway.model.bank.BankTransactionRequest;
+import com.checkout.payment.gateway.model.bank.BankTransactionResponse;
+import com.checkout.payment.gateway.model.domain.Payment;
 import com.checkout.payment.gateway.repository.PaymentsRepository;
 
 import java.util.UUID;
@@ -29,15 +29,15 @@ public class PaymentGatewayService {
     this.bankClient = bankClient;
   }
 
-  public GetPaymentResponse getPaymentById(UUID id) {
+  public PaymentResponse getPaymentById(UUID id) {
     LOG.debug("Requesting payment with ID {}", id);
     return paymentsRepository.get(id)
-        .map(this::toGetPaymentResponse)
+        .map(this::toPaymentResponse)
         .orElseThrow(() -> new PaymentNotFoundException(id));
   }
 
-  public PostPaymentResponse processPayment(PostPaymentRequest paymentRequest) {
-    BankResponse bankResponse = bankClient.processPayment(toBankPaymentRequest(paymentRequest));
+  public CreatePaymentResponse processPayment(CreatePaymentRequest request) {
+    BankTransactionResponse bankResponse = bankClient.processPayment(toBankTransactionRequest(request));
 
     PaymentStatus status = bankResponse.isAuthorized() ? PaymentStatus.AUTHORIZED : PaymentStatus.DECLINED;
     UUID paymentId = UUID.randomUUID();
@@ -45,21 +45,21 @@ public class PaymentGatewayService {
     Payment payment = new Payment();
     payment.setId(paymentId);
     payment.setStatus(status);
-    payment.setCardNumber(paymentRequest.getCardNumber());
-    payment.setExpiryMonth(paymentRequest.getExpiryMonth());
-    payment.setExpiryYear(paymentRequest.getExpiryYear());
-    payment.setCurrency(paymentRequest.getCurrency());
-    payment.setAmount(paymentRequest.getAmount());
+    payment.setCardNumber(request.getCardNumber());
+    payment.setExpiryMonth(request.getExpiryMonth());
+    payment.setExpiryYear(request.getExpiryYear());
+    payment.setCurrency(request.getCurrency());
+    payment.setAmount(request.getAmount());
     paymentsRepository.add(payment);
 
-    PostPaymentResponse response = new PostPaymentResponse();
-    response.setPaymentId(paymentId);
-    response.setPaymentStatus(status);
+    CreatePaymentResponse response = new CreatePaymentResponse();
+    response.setId(paymentId);
+    response.setStatus(status);
     return response;
   }
 
-  private BankPaymentRequest toBankPaymentRequest(PostPaymentRequest request) {
-    return new BankPaymentRequest(
+  private BankTransactionRequest toBankTransactionRequest(CreatePaymentRequest request) {
+    return new BankTransactionRequest(
         request.getCardNumber(),
         request.getExpiryDate(),
         request.getCurrency(),
@@ -68,8 +68,8 @@ public class PaymentGatewayService {
     );
   }
 
-  private GetPaymentResponse toGetPaymentResponse(Payment payment) {
-    GetPaymentResponse response = new GetPaymentResponse();
+  private PaymentResponse toPaymentResponse(Payment payment) {
+    PaymentResponse response = new PaymentResponse();
     response.setId(payment.getId());
     response.setStatus(payment.getStatus());
     response.setCardNumberLastFour(Integer.parseInt(

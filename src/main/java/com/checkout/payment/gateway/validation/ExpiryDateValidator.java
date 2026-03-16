@@ -1,14 +1,14 @@
 package com.checkout.payment.gateway.validation;
 
-import com.checkout.payment.gateway.model.PostPaymentRequest;
+import com.checkout.payment.gateway.model.api.CreatePaymentRequest;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import java.time.YearMonth;
 
-public class ExpiryDateValidator implements ConstraintValidator<ValidExpiryDate, PostPaymentRequest> {
+public class ExpiryDateValidator implements ConstraintValidator<ValidExpiryDate, CreatePaymentRequest> {
 
   @Override
-  public boolean isValid(PostPaymentRequest request, ConstraintValidatorContext context) {
+  public boolean isValid(CreatePaymentRequest request, ConstraintValidatorContext context) {
     if (request.getExpiryMonth() == null || request.getExpiryYear() == null) {
       return true; // let @NotNull handle missing values
     }

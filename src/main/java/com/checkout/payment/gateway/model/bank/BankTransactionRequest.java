@@ -1,6 +1,6 @@
-package com.checkout.payment.gateway.model;
+package com.checkout.payment.gateway.model.bank;
 
-public class BankPaymentRequest {
+public class BankTransactionRequest {
 
   private final String cardNumber;
   private final String expiryDate;
@@ -8,7 +8,7 @@ public class BankPaymentRequest {
   private final int amount;
   private final String cvv;
 
-  public BankPaymentRequest(String cardNumber, String expiryDate, String currency, int amount, String cvv) {
+  public BankTransactionRequest(String cardNumber, String expiryDate, String currency, int amount, String cvv) {
     this.cardNumber = cardNumber;
     this.expiryDate = expiryDate;
     this.currency = currency;

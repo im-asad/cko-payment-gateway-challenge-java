@@ -1,4 +1,4 @@
-package com.checkout.payment.gateway.model;
+package com.checkout.payment.gateway.model.api;
 
 import com.checkout.payment.gateway.validation.ValidExpiryDate;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -12,7 +12,7 @@ import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 
 @ValidExpiryDate
-public class PostPaymentRequest implements Serializable {
+public class CreatePaymentRequest implements Serializable {
 
   @NotBlank(message = "Card number is required")
   @Size(min = 14, max = 19, message = "Card number must be between 14 and 19 digits")
@@ -99,13 +99,13 @@ public class PostPaymentRequest implements Serializable {
 
   @Override
   public String toString() {
-    return "PostPaymentRequest{" +
-      "cardNumber='" + cardNumber + '\'' +
-      ", expiryMonth=" + expiryMonth +
-      ", expiryYear=" + expiryYear +
-      ", currency='" + currency + '\'' +
-      ", amount=" + amount +
-      ", cvv='" + cvv + '\'' +
-      '}';
+    return "CreatePaymentRequest{" +
+        "cardNumber='" + cardNumber + '\'' +
+        ", expiryMonth=" + expiryMonth +
+        ", expiryYear=" + expiryYear +
+        ", currency='" + currency + '\'' +
+        ", amount=" + amount +
+        ", cvv='" + cvv + '\'' +
+        '}';
   }
 }

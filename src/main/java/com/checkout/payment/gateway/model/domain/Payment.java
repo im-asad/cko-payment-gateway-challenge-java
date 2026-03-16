@@ -1,12 +1,13 @@
-package com.checkout.payment.gateway.model;
+package com.checkout.payment.gateway.model.domain;
 
 import com.checkout.payment.gateway.enums.PaymentStatus;
 import java.util.UUID;
 
-public class GetPaymentResponse {
+public class Payment {
+
   private UUID id;
   private PaymentStatus status;
-  private int cardNumberLastFour;
+  private String cardNumber;
   private int expiryMonth;
   private int expiryYear;
   private String currency;
@@ -28,12 +29,12 @@ public class GetPaymentResponse {
     this.status = status;
   }
 
-  public int getCardNumberLastFour() {
-    return cardNumberLastFour;
+  public String getCardNumber() {
+    return cardNumber;
   }
 
-  public void setCardNumberLastFour(int cardNumberLastFour) {
-    this.cardNumberLastFour = cardNumberLastFour;
+  public void setCardNumber(String cardNumber) {
+    this.cardNumber = cardNumber;
   }
 
   public int getExpiryMonth() {
@@ -66,18 +67,5 @@ public class GetPaymentResponse {
 
   public void setAmount(int amount) {
     this.amount = amount;
-  }
-
-  @Override
-  public String toString() {
-    return "GetPaymentResponse{" +
-        "id=" + id +
-        ", status=" + status +
-        ", cardNumberLastFour=" + cardNumberLastFour +
-        ", expiryMonth=" + expiryMonth +
-        ", expiryYear=" + expiryYear +
-        ", currency='" + currency + '\'' +
-        ", amount=" + amount +
-        '}';
   }
 }

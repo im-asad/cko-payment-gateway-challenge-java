@@ -1,6 +1,6 @@
 package com.checkout.payment.gateway.repository;
 
-import com.checkout.payment.gateway.model.Payment;
+import com.checkout.payment.gateway.model.domain.Payment;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;

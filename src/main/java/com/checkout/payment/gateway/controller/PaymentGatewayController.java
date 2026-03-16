@@ -1,8 +1,8 @@
 package com.checkout.payment.gateway.controller;
 
-import com.checkout.payment.gateway.model.GetPaymentResponse;
-import com.checkout.payment.gateway.model.PostPaymentRequest;
-import com.checkout.payment.gateway.model.PostPaymentResponse;
+import com.checkout.payment.gateway.model.api.CreatePaymentRequest;
+import com.checkout.payment.gateway.model.api.CreatePaymentResponse;
+import com.checkout.payment.gateway.model.api.PaymentResponse;
 import com.checkout.payment.gateway.service.PaymentGatewayService;
 import jakarta.validation.Valid;
 import java.util.UUID;
@@ -24,12 +24,12 @@ public class PaymentGatewayController {
   }
 
   @PostMapping("/payment")
-  public ResponseEntity<PostPaymentResponse> processPayment(@Valid @RequestBody PostPaymentRequest request) {
+  public ResponseEntity<CreatePaymentResponse> processPayment(@Valid @RequestBody CreatePaymentRequest request) {
     return new ResponseEntity<>(paymentGatewayService.processPayment(request), HttpStatus.CREATED);
   }
 
   @GetMapping("/payment/{id}")
-  public ResponseEntity<GetPaymentResponse> getPaymentById(@PathVariable UUID id) {
+  public ResponseEntity<PaymentResponse> getPaymentById(@PathVariable UUID id) {
     return new ResponseEntity<>(paymentGatewayService.getPaymentById(id), HttpStatus.OK);
   }
 }
