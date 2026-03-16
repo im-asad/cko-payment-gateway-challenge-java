@@ -14,6 +14,8 @@ import java.io.Serializable;
 @ValidExpiryDate
 public class CreatePaymentRequest implements Serializable {
 
+  private static final long serialVersionUID = 1L;
+
   @NotBlank(message = "Card number is required")
   @Size(min = 14, max = 19, message = "Card number must be between 14 and 19 digits")
   @Pattern(regexp = "\\d+", message = "Card number must contain only numeric characters")
@@ -99,13 +101,15 @@ public class CreatePaymentRequest implements Serializable {
 
   @Override
   public String toString() {
+    String maskedCard = cardNumber != null && cardNumber.length() >= 4
+        ? "****" + cardNumber.substring(cardNumber.length() - 4)
+        : "****";
     return "CreatePaymentRequest{" +
-        "cardNumber='" + cardNumber + '\'' +
+        "cardNumber='" + maskedCard + '\'' +
         ", expiryMonth=" + expiryMonth +
         ", expiryYear=" + expiryYear +
         ", currency='" + currency + '\'' +
         ", amount=" + amount +
-        ", cvv='" + cvv + '\'' +
         '}';
   }
 }
