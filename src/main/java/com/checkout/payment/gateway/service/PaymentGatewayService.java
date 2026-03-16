@@ -4,7 +4,7 @@ import com.checkout.payment.gateway.enums.PaymentStatus;
 import com.checkout.payment.gateway.exception.PaymentNotFoundException;
 import com.checkout.payment.gateway.model.api.CreatePaymentRequest;
 import com.checkout.payment.gateway.model.api.CreatePaymentResponse;
-import com.checkout.payment.gateway.model.api.PaymentResponse;
+import com.checkout.payment.gateway.model.api.GetPaymentResponse;
 import com.checkout.payment.gateway.model.bank.BankTransactionRequest;
 import com.checkout.payment.gateway.model.bank.BankTransactionResponse;
 import com.checkout.payment.gateway.model.domain.Payment;
@@ -29,10 +29,10 @@ public class PaymentGatewayService {
     this.bankClient = bankClient;
   }
 
-  public PaymentResponse getPaymentById(UUID id) {
+  public GetPaymentResponse getPaymentById(UUID id) {
     LOG.debug("Requesting payment with ID {}", id);
     return paymentsRepository.get(id)
-        .map(this::toPaymentResponse)
+        .map(this::toGetPaymentResponse)
         .orElseThrow(() -> new PaymentNotFoundException(id));
   }
 
@@ -68,8 +68,8 @@ public class PaymentGatewayService {
     );
   }
 
-  private PaymentResponse toPaymentResponse(Payment payment) {
-    PaymentResponse response = new PaymentResponse();
+  private GetPaymentResponse toGetPaymentResponse(Payment payment) {
+    GetPaymentResponse response = new GetPaymentResponse();
     response.setId(payment.getId());
     response.setStatus(payment.getStatus());
     response.setCardNumberLastFour(Integer.parseInt(

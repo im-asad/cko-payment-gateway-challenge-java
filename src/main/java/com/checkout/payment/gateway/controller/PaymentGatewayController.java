@@ -2,7 +2,7 @@ package com.checkout.payment.gateway.controller;
 
 import com.checkout.payment.gateway.model.api.CreatePaymentRequest;
 import com.checkout.payment.gateway.model.api.CreatePaymentResponse;
-import com.checkout.payment.gateway.model.api.PaymentResponse;
+import com.checkout.payment.gateway.model.api.GetPaymentResponse;
 import com.checkout.payment.gateway.service.PaymentGatewayService;
 import jakarta.validation.Valid;
 import java.util.UUID;
@@ -29,7 +29,7 @@ public class PaymentGatewayController {
   }
 
   @GetMapping("/payment/{id}")
-  public ResponseEntity<PaymentResponse> getPaymentById(@PathVariable UUID id) {
+  public ResponseEntity<GetPaymentResponse> getPaymentById(@PathVariable UUID id) {
     return new ResponseEntity<>(paymentGatewayService.getPaymentById(id), HttpStatus.OK);
   }
 }
